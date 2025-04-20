@@ -1,5 +1,5 @@
-const dotenv = require('dotenv')
-const pg = require('pg')
+import 'dotenv/config'
+import pg from 'pg'
 dotenv.config()
 
 module.exports = {
