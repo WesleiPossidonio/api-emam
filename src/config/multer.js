@@ -28,7 +28,7 @@ const multerConfig = {
   },
 };
 
-export const upload = multer(multerConfig).fields([
+const upload = multer(multerConfig).fields([
   { name: 'videos', maxCount: 3 }, // Aceita até 3 vídeos
   { name: 'images', maxCount: 5 }, // Aceita até 5 imagens
   { name: 'pdfs', maxCount: 5 } // Aceita até 5 PDFs
