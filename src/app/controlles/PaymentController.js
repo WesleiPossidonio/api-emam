@@ -1,8 +1,8 @@
 import validator from 'validator'
 import * as Yup from 'yup'
-import Alunos from '../model/Alunos'
+import Alunos from '../model/Alunos.js'
 import { v4 } from 'uuid'
-import Payments from '../model/Payment'
+import Payments from '../model/Payment.js'
 
 // Função de sanitização reutilizável
 const sanitizeInput = (data) => {

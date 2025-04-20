@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 import validator from 'validator'
-import User from '../model/User'
+import User from '../model/User.js'
 import * as Yup from 'yup'
 
 // Função de sanitização reutilizável

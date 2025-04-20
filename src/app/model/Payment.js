@@ -1,5 +1,4 @@
 import { Sequelize, Model } from 'sequelize'
-
 class Payments extends Model {
   static init (sequelize) {
     super.init(

@@ -1,5 +1,4 @@
 import { Model } from 'sequelize'
-
 class AlunosProfessores extends Model {
   static init (sequelize) {
     super.init({}, {

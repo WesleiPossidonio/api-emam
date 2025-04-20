@@ -1,9 +1,9 @@
 import { v4 } from 'uuid'
 import validator from 'validator'
 import * as Yup from 'yup'
-import ProfData from '../model/ProfData'
-import Horarios from '../model/Horarios'
-import Alunos from '../model/Alunos'
+import ProfData from '../model/ProfData.js'
+import Horarios from '../model/Horarios.js'
+import Alunos from '../model/Alunos.js'
 
 // Função de sanitização reutilizável
 const sanitizeInput = (data) => {

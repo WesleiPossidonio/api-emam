@@ -1,5 +1,5 @@
 import express from 'express'
-import routes from './routes'
+import routes from './routes.js'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import './database'

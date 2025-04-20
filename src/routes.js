@@ -1,13 +1,13 @@
 import { Router } from 'express'
 
-import AlunosController from './app/controlles/AlunosController'
-import SessionController from './app/controlles/SessionsController'
-import HorariosController from './app/controlles/HorariosController'
+import AlunosController from './app/controlles/AlunosController.js'
+import SessionController from './app/controlles/SessionsController.js'
+import HorariosController from './app/controlles/HorariosController.js'
 import { upload, uploadToGoogleDrive } from './config/multer'
-import ProfDataController from './app/controlles/ProfDataController'
-import UserController from './app/controlles/UserController'
+import ProfDataController from './app/controlles/ProfDataController.js'
+import UserController from './app/controlles/UserController.js'
 import authMiddlewares from './app/meddleawares/auth'
-import PaymentController from './app/controlles/PaymentController'
+import PaymentController from './app/controlles/PaymentController.js'
 
 const routes = new Router()
 

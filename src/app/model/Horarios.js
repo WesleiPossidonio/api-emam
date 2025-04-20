@@ -1,5 +1,4 @@
 import { Sequelize, Model } from 'sequelize'
-
 class Horarios extends Model {
   static init (sequelize) {
     super.init(
