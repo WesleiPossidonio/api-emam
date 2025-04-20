@@ -1,8 +1,8 @@
-import 'dotenv/config'
 import pg from 'pg'
+import dotenv from 'dotenv'
 dotenv.config()
 
-module.exports = {
+export default {
   dialect: 'postgres',
   dialectModule: pg,
   host: process.env.DB_HOST,
@@ -11,14 +11,14 @@ module.exports = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   define: {
-    timestamps: true, // corrigido de 'timespamps'
+    timestamps: true,
     underscored: true,
     underscoredAll: true,
   },
   dialectOptions: {
     ssl: {
       require: true,
-      rejectUnauthorized: false, // se certificado não for válido ou autoassinado
+      rejectUnauthorized: false,
     },
   },
 }
