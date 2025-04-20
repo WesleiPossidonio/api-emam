@@ -6,7 +6,7 @@ import HorariosController from './app/controlles/HorariosController.js'
 import { upload, uploadToGoogleDrive } from './config/multer.js'
 import ProfDataController from './app/controlles/ProfDataController.js'
 import UserController from './app/controlles/UserController.js'
-import authMiddlewares from './app/meddleawares/auth'
+import authMiddlewares from './app/meddleawares/auth.js'
 import PaymentController from './app/controlles/PaymentController.js'
 
 const routes = new Router()
