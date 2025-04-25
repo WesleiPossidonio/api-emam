@@ -38,7 +38,6 @@ export const sendMailStudents = async ({ email, name }) => {
   })
 
   const mjmlCode = `
-
   <mj-style>
     .full-width-image img {
       width: 100% !important;

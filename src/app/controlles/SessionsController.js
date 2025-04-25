@@ -64,7 +64,7 @@ class SessionController {
         name: user.name,
         admin: user.admin,
         email: user.email,
-        registration: user.registration,
+        role: 'admin'
       });
     }
 
@@ -84,7 +84,7 @@ class SessionController {
       return response.json({
         name: students.name,
         email: students.email,
-        registration: students.registration,
+        role: 'students',
       });
     }
 
@@ -106,7 +106,7 @@ class SessionController {
         name: prof.name,
         admin: prof.admin,
         email: prof.email,
-        registration: prof.registration,
+        role: 'prof',
       });
     }
 
