@@ -19,7 +19,7 @@ const sanitizeInput = (data) => {
 class SessionController {
   async store (request, response) {
     const schema = Yup.object().shape({
-      name: Yup.string().required(),
+      email: Yup.string().email().required(),
       password: Yup.string().required(),
     });
 
@@ -35,11 +35,11 @@ class SessionController {
       return nameOrPasswordIncorrect();
     }
 
-    const { name, password } = sanitizedBody;
+    const { password, email } = sanitizedBody;
 
-    const user = await User.findOne({ where: { name } });
-    const prof = await ProfData.findOne({ where: { name } });
-    const students = await Alunos.findOne({ where: { name } })
+    const user = await User.findOne({ where: { email }, });
+    const prof = await ProfData.findOne({ where: { email }, });
+    const students = await Alunos.findOne({ where: { email }, })
 
     // Nenhum dos dois encontrados
     if (!user && !prof && !students) {
@@ -48,7 +48,7 @@ class SessionController {
 
     // Tenta login como usuário
     if (user && (await user.checkPassword(password))) {
-      const token = jwt.sign({ id: user.id }, authConfig.secret, {
+      const token = jwt.sign({ id: user.id, role: 'admin' }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       });
 
@@ -70,11 +70,11 @@ class SessionController {
 
     // Tenta login como Estudante
     if (students && (await students.checkPassword(password))) {
-      const token = jwt.sign({ id: students.id, name: students.name }, authConfig.secret, {
+      const token = jwt.sign({ id: students.id, name: students.name, role: 'students' }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       });
 
-      response.cookie('token', token, {
+      response.cookie('token_aluno', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production' ? true : false, // Apenas em produção
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // LAX em desenvolvimento+++
@@ -91,11 +91,11 @@ class SessionController {
 
     // Tenta login como profissional
     if (prof && (await prof.checkPassword(password))) {
-      const token = jwt.sign({ id: prof.id, name: prof.name }, authConfig.secret, {
+      const token = jwt.sign({ id: prof.id, name: prof.name, role: 'prof' }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       });
 
-      response.cookie('token', token, {
+      response.cookie('token_prof', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production' ? true : false, // Apenas em produção
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // LAX em desenvolvimento+++
@@ -124,10 +124,32 @@ class SessionController {
 
     try {
       const decoded = jwt.verify(token, authConfig.secret);
-      response.status(200).json({ message: 'Authenticated', userId: decoded.id });
-    } catch {
+      const { id, role } = decoded;
+
+      let user;
+
+      if (role === 'admin') {
+        user = await User.findByPk(id);
+      } else if (role === 'aluno') {
+        user = await Alunos.findByPk(id);
+      } else if (role === 'professor') {
+        user = await ProfData.findByPk(id);
+      }
+
+      if (!user) {
+        return response.status(401).json({ error: 'Usuário não encontrado' });
+      }
+
+      return response.status(200).json({
+        message: 'Authenticated',
+        userId: user.id,
+        name: user.name,
+        role,
+      });
+    } catch (err) {
       return response.status(401).json({ error: 'Token is invalid or expired' });
     }
+
   }
 
 }

@@ -44,14 +44,12 @@ class PaymentsController {
         file_url: pdfs[0].link
       }
 
-      console.log(fileData)
     } else if (images.length > 0) {
       fileData = {
         file_id: pdfs[0].id,
         file_url: pdfs[0].link
       }
 
-      console.log(fileData)
     } else {
       return response.status(409).json({ error: 'payment not exists' })
     }
@@ -71,6 +69,8 @@ class PaymentsController {
       id_comporovante: fileData.file_id,
       mes_referencia,
     })
+
+
 
     return response.status(201).json({ message: 'payment created successfully' })
   }

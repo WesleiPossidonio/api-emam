@@ -76,20 +76,20 @@ class ProfDataController {
     const listExercices = await ProfData.findAll({
       order: [['createdAt', 'ASC']],
       include: [
-        // {
-        //   model: Horarios,
-        //   as: 'meus_horarios_disponiveis', // Alias correto conforme definido no modelo
-        //   attributes: [
-        //     'id',
-        //     'dia',
-        //     'horario',
-        //     'turno',
-        //     'disponibilidade_horario',
-        //     'disponibilidade_alunos',
-        //     'quantidade_alunos',
-        //   ],
+        {
+          model: Horarios,
+          as: 'horarios', // Alias correto conforme definido no modelo
+          attributes: [
+            'id',
+            'dia',
+            'horario',
+            'turno',
+            'disponibilidade_horario',
+            'disponibilidade_alunos',
+            'quantidade_alunos',
+          ],
 
-        // },
+        },
         {
           model: Alunos,
           as: 'alunos', // Alias correto conforme definido no modelo

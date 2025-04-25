@@ -4,6 +4,8 @@ import Alunos from '../model/Alunos.js'
 import { v4 } from 'uuid'
 import Horarios from '../model/Horarios.js'
 import ProfData from '../model/ProfData.js'
+import { sendMailStudents } from '../sendMail/index.js'
+
 
 // Função de sanitização reutilizável
 const sanitizeInput = (data) => {
@@ -22,6 +24,7 @@ class AlunosController {
       id_hours: Yup.string().required(),
       name: Yup.string().required(),
       email: Yup.string().email().required(),
+      password: Yup.string().required().min(6),
       telefone: Yup.string().required(),
       experiencia_com_musica: Yup.string().required(),
       data_de_nascimento: Yup.string().required(),
@@ -44,6 +47,7 @@ class AlunosController {
       telefone,
       experiencia_com_musica,
       responsible_name,
+      password
     } = sanitizedBody
 
     const { data_de_nascimento } = request.body
@@ -57,9 +61,10 @@ class AlunosController {
 
     // Verifica se horário existe e se ainda está disponível
     const hoursData = await Horarios.findOne({ where: { id: id_hours } })
+    const ProfExist = await ProfData.findOne({ where: { id: id_prof } })
 
-    if (!hoursData) {
-      return response.status(404).json({ error: 'Horário não encontrado' })
+    if (!hoursData || !ProfExist) {
+      return response.status(404).json({ error: 'Horário ou Professor não encontrado' })
     }
 
     if (
@@ -75,11 +80,11 @@ class AlunosController {
       aluno = alunoExistente
 
       // Verifica se o professor já está associado a esse aluno
-      const jaTemEsseProfessor = aluno.professores.some(
+      const profData = aluno.professores.some(
         (prof) => prof.id === id_prof
       )
 
-      if (jaTemEsseProfessor) {
+      if (profData) {
         return response.status(409).json({ error: 'Aluno já está vinculado a esse professor' })
       }
 
@@ -94,6 +99,7 @@ class AlunosController {
         name,
         email,
         telefone,
+        password,
         experiencia_com_musica,
         responsible_name,
         data_de_nascimento,
@@ -112,6 +118,15 @@ class AlunosController {
 
     await hoursData.save()
 
+    // Envia o e-mail
+    try {
+      await sendMailStudents({ email, name })
+    } catch (err) {
+      console.error('Erro ao enviar e-mail após pagamento:', err)
+      // Você pode optar por continuar sem retornar erro aqui se o pagamento foi salvo com sucesso
+    }
+
+
     return response.status(201).json({ message: 'Aluno atualizado ou criado com sucesso' })
   }
 
@@ -121,7 +136,7 @@ class AlunosController {
       include: [
         {
           model: Horarios,
-          as: 'Horario',
+          as: 'horarios_alunos',
           attributes: [
             'id',
             'dia',
@@ -136,7 +151,7 @@ class AlunosController {
             'id',
             'name',
             'email',
-            'instrumento_musica',
+            'instrumento_musical',
             'telefone_contato'
           ]
         }

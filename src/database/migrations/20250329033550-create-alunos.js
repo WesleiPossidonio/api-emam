@@ -29,7 +29,6 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
       },
       responsible_name: {
         type: Sequelize.STRING,
@@ -40,15 +39,17 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
+      password_hash: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       telefone: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
       },
       experiencia_com_musica: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
-        unique: true,
       },
       data_de_nascimento: {
         type: Sequelize.STRING,
