@@ -18,7 +18,7 @@ routes.get('/getAlunos', AlunosController.index)
 
 routes.post('/payment', upload, uploadToGoogleDrive, PaymentController.store)
 
-// routes.use(authMiddlewares)
+routes.use(authMiddlewares)
 routes.post('/createHours', HorariosController.store)
 routes.get('/getHours', HorariosController.index)
 
