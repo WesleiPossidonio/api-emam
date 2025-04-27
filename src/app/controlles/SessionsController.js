@@ -88,7 +88,6 @@ class SessionController {
       });
     }
 
-
     // Tenta login como profissional
     if (prof && (await prof.checkPassword(password))) {
       const token = jwt.sign({ id: prof.id, name: prof.name, role: 'prof' }, authConfig.secret, {
@@ -116,7 +115,7 @@ class SessionController {
 
 
   async index (request, response) {
-    const token = request.cookies['token']
+    const token = request.cookies['token'] || request.cookies['token_prof'] || request.cookies['token_aluno'];
 
     if (!token) {
       return response.status(401).json({ error: 'Token not provided' });
@@ -132,7 +131,7 @@ class SessionController {
         user = await User.findByPk(id);
       } else if (role === 'aluno') {
         user = await Alunos.findByPk(id);
-      } else if (role === 'professor') {
+      } else if (role === 'prof') {
         user = await ProfData.findByPk(id);
       }
 
