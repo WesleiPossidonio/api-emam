@@ -16,15 +16,15 @@ export default (request, response, next) => {
     return response.status(400).json({ error: 'Invalid role provided' });
   }
 
-  if (!authToken) {
-    return response.status(401).json({ error: 'Token not provided' })
+  if (!token) {
+    return response.status(401).json({ error: 'Token not provided' });
   }
 
   try {
-    const decoded = Jwt.verify(authToken, authConfig.secret)
-    request.userId = decoded.id
-    return next()
+    const decoded = Jwt.verify(token, authConfig.secret);
+    request.userId = decoded.id;
+    return next();
   } catch {
-    return response.status(401).json({ error: 'Token is invalid' })
+    return response.status(401).json({ error: 'Token is invalid' });
   }
 }
