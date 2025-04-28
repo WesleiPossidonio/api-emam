@@ -54,7 +54,7 @@ class SessionController {
       });
 
 
-      response.cookie('token', token, {
+      response.cookie('role', 'token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production' ? true : false, // Apenas em produção
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // LAX em desenvolvimento+++
@@ -75,7 +75,7 @@ class SessionController {
         expiresIn: authConfig.expiresIn,
       });
 
-      response.cookie('token_aluno', token, {
+      response.cookie('role', 'token_aluno', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production' ? true : false, // Apenas em produção
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // LAX em desenvolvimento+++
@@ -95,7 +95,7 @@ class SessionController {
         expiresIn: authConfig.expiresIn,
       });
 
-      response.cookie('token_prof', token, {
+      response.cookie('role', 'token_prof', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production' ? true : false, // Apenas em produção
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // LAX em desenvolvimento+++

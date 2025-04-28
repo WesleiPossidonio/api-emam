@@ -21,9 +21,7 @@ routes.get('/getProf', ProfDataController.index)
 routes.use(authMiddlewares)
 routes.get('/getAlunos', AlunosController.index)
 routes.post('/createHours', HorariosController.store)
-
 routes.post('/createProf', ProfDataController.store)
-
 routes.post('/createUser', UserController.store)
 routes.get('/getUser', UserController.index)
 
