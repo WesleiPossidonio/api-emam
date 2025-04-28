@@ -30,6 +30,8 @@ class App {
   checkOrigin (origin, callback) {
     const allowedOrigins = [
       'http://localhost:5173',
+      'https://www.emam.com.br',
+      'https://emam.com.br',
     ]
 
     if (!origin || allowedOrigins.includes(origin)) {
