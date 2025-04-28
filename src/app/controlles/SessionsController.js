@@ -37,9 +37,10 @@ class SessionController {
 
     const { password, email } = sanitizedBody;
 
+    const students = await Alunos.findOne({ where: { email }, })
     const user = await User.findOne({ where: { email }, });
     const prof = await ProfData.findOne({ where: { email }, });
-    const students = await Alunos.findOne({ where: { email }, })
+
 
     // Nenhum dos dois encontrados
     if (!user && !prof && !students) {
@@ -129,7 +130,7 @@ class SessionController {
 
       if (role === 'admin') {
         user = await User.findByPk(id);
-      } else if (role === 'aluno') {
+      } else if (role === 'students') {
         user = await Alunos.findByPk(id);
       } else if (role === 'prof') {
         user = await ProfData.findByPk(id);
