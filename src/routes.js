@@ -14,16 +14,15 @@ const routes = new Router()
 routes.post('/session', SessionController.store)
 routes.get('/check-auth', SessionController.index)
 routes.post('/createAlunos', AlunosController.store)
-
+routes.get('/getHours', HorariosController.index)
 routes.post('/payment', upload, uploadToGoogleDrive, PaymentController.store)
+routes.get('/getProf', ProfDataController.index)
 
 routes.use(authMiddlewares)
 routes.get('/getAlunos', AlunosController.index)
 routes.post('/createHours', HorariosController.store)
-routes.get('/getHours', HorariosController.index)
 
 routes.post('/createProf', ProfDataController.store)
-routes.get('/getProf', ProfDataController.index)
 
 routes.post('/createUser', UserController.store)
 routes.get('/getUser', UserController.index)
