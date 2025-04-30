@@ -1,20 +1,18 @@
-import * as Yup from 'yup'
-import validator from 'validator'
-import jwt from 'jsonwebtoken'
-import authConfig from '../../config/auth.js'
-import User from '../model/User.js'
-import ProfData from '../model/ProfData.js'
-import Alunos from '../model/Alunos.js'
+import * as Yup from 'yup';
+import validator from 'validator';
+import jwt from 'jsonwebtoken';
+import authConfig from '../../config/auth.js';
+import User from '../model/User.js';
+import ProfData from '../model/ProfData.js';
+import Alunos from '../model/Alunos.js';
 
-// Função de sanitização reutilizável
 const sanitizeInput = (data) => {
-  const sanitizedData = {}
+  const sanitizedData = {};
   Object.keys(data).forEach((key) => {
-    sanitizedData[key] =
-      typeof data[key] === 'string' ? validator.escape(data[key]) : data[key]
-  })
-  return sanitizedData
-}
+    sanitizedData[key] = typeof data[key] === 'string' ? validator.escape(data[key]) : data[key];
+  });
+  return sanitizedData;
+};
 
 class SessionController {
   async store (request, response) {
@@ -23,64 +21,71 @@ class SessionController {
       password: Yup.string().required(),
     });
 
-    const nameOrPasswordIncorrect = () => {
-      return response
-        .status(400)
-        .json({ error: 'Make sure your password or name are correct' });
-    };
-
     const sanitizedBody = sanitizeInput(request.body);
+    const { email, password } = sanitizedBody;
+
+    const nameOrPasswordIncorrect = () => {
+      return response.status(400).json({ error: 'Make sure your password or name are correct' });
+    };
 
     if (!(await schema.isValid(sanitizedBody))) {
       return nameOrPasswordIncorrect();
     }
 
-    const { password, email } = sanitizedBody;
+    // Limpa cookies antigos
+    response.clearCookie('token');
+    response.clearCookie('role');
 
-    const students = await Alunos.findOne({ where: { email }, })
-    const user = await User.findOne({ where: { email }, });
-    const prof = await ProfData.findOne({ where: { email }, });
+    const user = await User.findOne({ where: { email } });
+    const students = await Alunos.findOne({ where: { email } });
+    const prof = await ProfData.findOne({ where: { email } });
 
-
-    // Nenhum dos dois encontrados
-    if (!user && !prof && !students) {
-      return nameOrPasswordIncorrect();
-    }
-
-    // Tenta login como usuário
+    // Admin
     if (user && (await user.checkPassword(password))) {
       const token = jwt.sign({ id: user.id, role: 'admin' }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       });
 
-
-      response.cookie('role', 'token', token, {
+      response.cookie('token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production' ? true : false, // Apenas em produção
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // LAX em desenvolvimento+++
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 24 * 60 * 60 * 1000,
-      })
+      });
+
+      response.cookie('role', 'admin', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 24 * 60 * 60 * 1000,
+      });
 
       return response.json({
         name: user.name,
-        admin: user.admin,
         email: user.email,
-        role: 'admin'
+        role: 'admin',
       });
     }
 
-    // Tenta login como Estudante
+    // Estudante
     if (students && (await students.checkPassword(password))) {
-      const token = jwt.sign({ id: students.id, name: students.name, role: 'students' }, authConfig.secret, {
+      const token = jwt.sign({ id: students.id, role: 'students' }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       });
 
-      response.cookie('role', 'token_aluno', token, {
+      response.cookie('token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production' ? true : false, // Apenas em produção
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // LAX em desenvolvimento+++
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 24 * 60 * 60 * 1000,
-      })
+      });
+
+      response.cookie('role', 'students', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 24 * 60 * 60 * 1000,
+      });
 
       return response.json({
         name: students.name,
@@ -89,34 +94,39 @@ class SessionController {
       });
     }
 
-    // Tenta login como profissional
+    // Profissional
     if (prof && (await prof.checkPassword(password))) {
-      const token = jwt.sign({ id: prof.id, name: prof.name, role: 'prof' }, authConfig.secret, {
+      const token = jwt.sign({ id: prof.id, role: 'prof' }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       });
 
-      response.cookie('role', 'token_prof', token, {
+      response.cookie('token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production' ? true : false, // Apenas em produção
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // LAX em desenvolvimento+++
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 24 * 60 * 60 * 1000,
-      })
+      });
+
+      response.cookie('role', 'prof', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 24 * 60 * 60 * 1000,
+      });
 
       return response.json({
         name: prof.name,
-        admin: prof.admin,
         email: prof.email,
+        id: prof.id,
         role: 'prof',
       });
     }
 
-    // Senha incorreta
     return nameOrPasswordIncorrect();
   }
 
-
   async index (request, response) {
-    const token = request.cookies['token'] || request.cookies['token_prof'] || request.cookies['token_aluno'];
+    const token = request.cookies['token'];
 
     if (!token) {
       return response.status(401).json({ error: 'Token not provided' });
@@ -149,9 +159,7 @@ class SessionController {
     } catch (err) {
       return response.status(401).json({ error: 'Token is invalid or expired' });
     }
-
   }
-
 }
 
-export default new SessionController()
+export default new SessionController();
