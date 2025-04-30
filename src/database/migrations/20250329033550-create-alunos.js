@@ -55,6 +55,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      instrumento_musical: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,

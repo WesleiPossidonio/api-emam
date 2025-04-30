@@ -29,9 +29,13 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      instrumento_musical: {
+      instrumento_musical1: {
         type: Sequelize.STRING,
         allowNull: false,
+      },
+      instrumento_musical2: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       update_number: {
         type: Sequelize.STRING,

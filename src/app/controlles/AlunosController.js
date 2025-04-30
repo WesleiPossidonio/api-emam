@@ -29,6 +29,7 @@ class AlunosController {
       experiencia_com_musica: Yup.string().required(),
       data_de_nascimento: Yup.string().required(),
       responsible_name: Yup.string().required(),
+      instrumento_musical: Yup.string().required(),
     })
 
     const sanitizedBody = sanitizeInput(request.body)
@@ -47,7 +48,8 @@ class AlunosController {
       telefone,
       experiencia_com_musica,
       responsible_name,
-      password
+      password,
+      instrumento_musical
     } = sanitizedBody
 
     const { data_de_nascimento } = request.body
@@ -103,6 +105,7 @@ class AlunosController {
         experiencia_com_musica,
         responsible_name,
         data_de_nascimento,
+        instrumento_musical,
       })
 
       // Associa o professor
@@ -151,7 +154,8 @@ class AlunosController {
             'id',
             'name',
             'email',
-            'instrumento_musical',
+            'instrumento_musical1',
+            'instrumento_musical2',
             'telefone_contato'
           ]
         }

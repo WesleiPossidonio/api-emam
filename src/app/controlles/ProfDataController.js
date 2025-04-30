@@ -23,7 +23,8 @@ class ProfDataController {
       password: Yup.string().required().min(6),
       telefone_contato: Yup.string().required(),
       update_number: Yup.string().optional(),
-      instrumento_musical: Yup.string().required()
+      instrumento_musical1: Yup.string().required(),
+      instrumento_musical2: Yup.string().required(),
     })
 
     const sanitizedBody = sanitizeInput(request.body)
@@ -40,7 +41,8 @@ class ProfDataController {
       password,
       telefone_contato,
       update_number,
-      instrumento_musical
+      instrumento_musical1,
+      instrumento_musical2
     } = sanitizedBody
 
     const emailUserExists = await ProfData.findOne({
@@ -66,7 +68,8 @@ class ProfDataController {
       password,
       telefone_contato,
       update_number,
-      instrumento_musical
+      instrumento_musical1,
+      instrumento_musical2
     })
 
     return response.status(201).json(dataProf)
