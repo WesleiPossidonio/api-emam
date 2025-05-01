@@ -14,8 +14,8 @@ class Alunos extends Model {
         responsible_name: Sequelize.STRING,
         data_de_nascimento: Sequelize.STRING,
         experiencia_com_musica: Sequelize.BOOLEAN,
-        instrumento_musical: Sequelize.STRING
-        // pix_comprovante: Sequelize.STRING,
+        instrumento_musical: Sequelize.STRING,
+        update_number: Sequelize.STRING,
       },
       {
         sequelize,

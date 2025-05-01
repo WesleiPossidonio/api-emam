@@ -75,7 +75,6 @@ class UserController {
       password: Yup.string().optional().min(6),
       name: Yup.string().optional(),
       email: Yup.string().email().optional(),
-      registration: Yup.string().optional(),
     })
 
     const sanitizedBody = sanitizeInput(request.body)
@@ -89,7 +88,7 @@ class UserController {
     const { password, update_number, name, email, registration } = sanitizedBody
     const { id } = request.params // Assumindo que `id` seja passado na URL (ex: /users/:id)
 
-    if (update_number) {
+    if (update_number && !id) {
       const verificationNumber = await User.findOne({
         where: { update_number },
       })
@@ -120,7 +119,6 @@ class UserController {
 
     if (name) verificationUser.name = name
     if (email) verificationUser.email = email
-    if (registration) verificationUser.registration = registration
     if (password) verificationUser.password = password
 
     await verificationUser.save();

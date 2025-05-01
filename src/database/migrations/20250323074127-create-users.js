@@ -27,10 +27,6 @@ module.exports = {
         defaultValue: false,
         allowNull: false,
       },
-      registration: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
       update_number: {
         type: Sequelize.STRING,
         allowNull: false,
