@@ -39,7 +39,7 @@ class ConfirmEmailController {
       return response.status(400).json({ error: 'Email incorrect' })
     }
 
-    const verificationNumber = Math.floor(Math.random() * 40001) + 10000
+    const verificationNumber = Math.floor(Math.random() * 400001) + 100000
     await user.update({ update_number: verificationNumber })
 
     const mjmlCode = `
@@ -51,11 +51,12 @@ class ConfirmEmailController {
       </mj-style>
       <mjml version="3.3.3">
         <mj-body background-color="#F4F4F4" color="#55575d" font-family="Arial, sans-serif">
-          <mj-section background-color="#f2f2f2" padding="0" text-align="center">
-            <mj-column padding="0">
-              <mj-image src="https://i.imgur.com/BReyDw0l.jpg" fluid-on-mobile="true" padding="0" css-class="full-width-image"></mj-image>
-            </mj-column>
-          </mj-section>
+        <mj-section background-color="#000" padding="0" text-align="center">
+          <mj-column padding="0" background-color="#000" padding="25px" text-align="center"> 
+            <strong font-size="35px" color="#ffffff">Emam</strong>
+          </mj-column>
+        </mj-section>
+
           <mj-section background-color="#fff" padding="0px 0px 20px 0px" align-items="center" text-align="center">
             <mj-column>
               <mj-text>
@@ -64,7 +65,7 @@ class ConfirmEmailController {
                   <p color="#000" >Clique no botão para atualizar a sua senha</p>
               </mj-text>
               <mj-button background-color="#000" 
-                href=#/Atualizar-Senha" padding="20px"> 
+                href=https://www.emam.com.br/Atualizar-Senha" padding="20px"> 
                 Clique Aqui! 
               </mj-button>
             </mj-column>

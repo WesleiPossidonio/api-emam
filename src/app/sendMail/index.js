@@ -48,9 +48,9 @@ export const sendMailStudents = async ({ email, name }) => {
     <mjml>
       <mj-body background-color="#F4F4F4" color="#55575d" font-family="Arial, sans-serif">
       <mj-section background-color="#f2f2f2" padding="0" text-align="center" full-width="full-width">
-        <mj-section background-color="#f2f2f2" padding="0" text-align="center">
-          <mj-column padding="0">
-            <mj-image src="https://i.imgur.com/BReyDw0l.jpg" fluid-on-mobile="true" padding="0" css-class="full-width-image"></mj-image>
+        <mj-section background-color="#000" padding="0" text-align="center">
+          <mj-column padding="0" background-color="#000" padding="25px" text-align="center"> 
+            <strong font-size="35px" color="#ffffff">Emam</strong>
           </mj-column>
         </mj-section>
         
@@ -73,7 +73,7 @@ export const sendMailStudents = async ({ email, name }) => {
                Após a confirmação, sua matrícula será concluída com sucesso.
               </p>
 
-              <a href="#" target="_blank" rel="noopener noreferrer">Portal do Aluno</a>
+              <a href="https://www.emam.com.br/login-estudante" target="_blank" rel="noopener noreferrer">Portal do Aluno</a>
             </mj-text>
 
              <mj-text>
