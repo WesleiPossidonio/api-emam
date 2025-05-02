@@ -1,9 +1,10 @@
 import * as Yup from 'yup'
-import User from '../models/User'
+
 import mjml2html from 'mjml'
 import nodemailer from 'nodemailer'
 import jwt from 'jsonwebtoken'
 import authConfig from '../../config/auth'
+import User from '../model/User'
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
