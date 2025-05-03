@@ -21,7 +21,6 @@ class UserController {
       password: Yup.string().required().min(6),
       admin: Yup.boolean().required(),
       update_number: Yup.string().optional(),
-      registration: Yup.string().required(),
     })
 
     const sanitizedBody = sanitizeInput(request.body)
@@ -32,7 +31,7 @@ class UserController {
       return response.status(400).json({ error: err.errors })
     }
 
-    const { name, email, password, admin, registration, update_number } =
+    const { name, email, password, admin, update_number } =
       sanitizedBody
 
     const emailUserExists = await User.findOne({
@@ -57,7 +56,6 @@ class UserController {
       email,
       password,
       admin,
-      registration,
       update_number,
     })
 
@@ -85,7 +83,7 @@ class UserController {
       return response.status(400).json({ error: err.errors })
     }
 
-    const { password, update_number, name, email, registration } = sanitizedBody
+    const { password, update_number, name, email } = sanitizedBody
     const { id } = request.params // Assumindo que `id` seja passado na URL (ex: /users/:id)
 
     if (update_number && !id) {

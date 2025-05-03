@@ -9,7 +9,6 @@ class User extends Model {
         password: Sequelize.VIRTUAL,
         password_hash: Sequelize.STRING,
         admin: Sequelize.BOOLEAN,
-        registration: Sequelize.STRING,
         update_number: Sequelize.STRING,
       },
       {
