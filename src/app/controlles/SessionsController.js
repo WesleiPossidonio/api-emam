@@ -3,8 +3,9 @@ import validator from 'validator';
 import jwt from 'jsonwebtoken';
 import authConfig from '../../config/auth.js';
 import User from '../model/User.js';
-import ProfData from '../model/ProfData.js';
 import Alunos from '../model/Alunos.js';
+import ProfData from '../model/ProfData.js';
+
 
 const sanitizeInput = (data) => {
   const sanitizedData = {};
