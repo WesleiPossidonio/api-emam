@@ -24,7 +24,7 @@ class ProfDataController {
       telefone_contato: Yup.string().required(),
       update_number: Yup.string().optional(),
       instrumento_musical1: Yup.string().required(),
-      instrumento_musical2: Yup.string().required(),
+      instrumento_musical2: Yup.string().optional(),
     })
 
     const sanitizedBody = sanitizeInput(request.body)
