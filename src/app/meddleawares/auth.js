@@ -1,30 +1,26 @@
 import Jwt from 'jsonwebtoken'
-import authConfig from '../../config/auth.js'
+import authConfig from '../../config/auth'
 
 export default (request, response, next) => {
+  const authToken = request.headers.authorization
 
-  let token = null;
-
-  if (request.cookies['token']) {
-    token = request.cookies['token'];
-  } else if (request.cookies['token_prof']) {
-    token = request.cookies['token_prof'];
-  } else if (request.cookies['token_aluno']) {
-    token = request.cookies['token_aluno'];
+  if (!authToken) {
+    return response.status(401).json({ error: 'Token not provided' })
   }
 
-  if (!token) {
-    return response.status(401).json({ error: 'Token not provided' });
-  }
+  const token = authToken.split(' ')[1]
 
   try {
-    const decoded = Jwt.verify(token, authConfig.secret);
-    request.userId = decoded.id;
-    request.userRole = decoded.role; // <<< aqui já guarda o role
-    return next();
+    Jwt.verify(token, authConfig.secret, function (err, decoded) {
+      if (err) {
+        throw new Error()
+      }
+
+      request.userId = decoded.id
+      request.userName = decoded.name
+    })
   } catch {
-    return response.status(401).json({ error: 'Token is invalid or expired' });
+    return response.status(401).json({ error: 'Token is invalid' })
   }
-
-
+  return next()
 }

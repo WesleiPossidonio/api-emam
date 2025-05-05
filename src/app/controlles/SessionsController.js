@@ -6,7 +6,6 @@ import User from '../model/User.js';
 import Alunos from '../model/Alunos.js';
 import ProfData from '../model/ProfData.js';
 
-
 const sanitizeInput = (data) => {
   const sanitizedData = {};
   Object.keys(data).forEach((key) => {
@@ -33,93 +32,50 @@ class SessionController {
       return nameOrPasswordIncorrect();
     }
 
-    // Limpa cookies antigos
-    response.clearCookie('token');
-    response.clearCookie('role');
-
     const user = await User.findOne({ where: { email } });
     const students = await Alunos.findOne({ where: { email } });
     const prof = await ProfData.findOne({ where: { email } });
 
     // Admin
     if (user && (await user.checkPassword(password))) {
-      const token = jwt.sign({ id: user.id, role: 'admin' }, authConfig.secret, {
+      const token = jwt.sign({
+        id: user.id, role: 'admin', name: user.name,
+        email: user.email,
+      }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       });
 
-      response.cookie('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        maxAge: 24 * 60 * 60 * 1000,
-      });
-
-      response.cookie('role', 'admin', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        maxAge: 24 * 60 * 60 * 1000,
-      });
-
       return response.json({
-        name: user.name,
-        email: user.email,
-        role: 'admin',
+        token,
       });
     }
 
     // Estudante
     if (students && (await students.checkPassword(password))) {
-      const token = jwt.sign({ id: students.id, role: 'students' }, authConfig.secret, {
+      const token = jwt.sign({
+        id: students.id, role: 'students', name: students.name,
+        email: students.email,
+      }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       });
 
-      response.cookie('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        maxAge: 24 * 60 * 60 * 1000,
-      });
-
-      response.cookie('role', 'students', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        maxAge: 24 * 60 * 60 * 1000,
-      });
-
       return response.json({
-        name: students.name,
-        email: students.email,
-        role: 'students',
+        token,
       });
     }
 
     // Profissional
     if (prof && (await prof.checkPassword(password))) {
-      const token = jwt.sign({ id: prof.id, role: 'prof' }, authConfig.secret, {
+      const token = jwt.sign({
+        id: prof.id, role: 'prof', name: prof.name,
+        email: prof.email,
+        id: prof.id,
+      }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       });
 
-      response.cookie('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        maxAge: 24 * 60 * 60 * 1000,
-      });
-
-      response.cookie('role', 'prof', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        maxAge: 24 * 60 * 60 * 1000,
-      });
-
       return response.json({
-        name: prof.name,
-        email: prof.email,
-        id: prof.id,
-        role: 'prof',
+        token,
       });
     }
 
@@ -127,11 +83,13 @@ class SessionController {
   }
 
   async index (request, response) {
-    const token = request.cookies['token'];
+    const authHeader = request.headers.authorization;
 
-    if (!token) {
+    if (!authHeader) {
       return response.status(401).json({ error: 'Token not provided' });
     }
+
+    const [, token] = authHeader.split(' '); // "Bearer <token>"
 
     try {
       const decoded = jwt.verify(token, authConfig.secret);
