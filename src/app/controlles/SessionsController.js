@@ -69,7 +69,6 @@ class SessionController {
       const token = jwt.sign({
         id: prof.id, role: 'prof', name: prof.name,
         email: prof.email,
-        id: prof.id,
       }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       });
