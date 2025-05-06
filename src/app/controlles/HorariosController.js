@@ -78,8 +78,8 @@ class HorariosController {
   }
 
   async index (request, response) {
-    const listExercices = await Horarios.findAll()
-    return response.json(listExercices)
+    const listSchedules = await Horarios.findAll()
+    return response.json(listSchedules)
   }
 
   async update (request, response) {

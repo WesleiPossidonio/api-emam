@@ -5,6 +5,7 @@ import { v4 } from 'uuid'
 import Horarios from '../model/Horarios.js'
 import ProfData from '../model/ProfData.js'
 import { sendMailStudents } from '../sendMail/index.js'
+import Payments from '../model/Payment.js'
 
 
 // Função de sanitização reutilizável
@@ -157,6 +158,16 @@ class AlunosController {
             'instrumento_musical1',
             'instrumento_musical2',
             'telefone_contato'
+          ]
+        },
+        {
+          model: Payments,
+          as: 'pagamentos',
+          attributes: [
+            'id',
+            'pix_comprovante',
+            'id_comporovante',
+            'mes_referencia',
           ]
         }
       ]
