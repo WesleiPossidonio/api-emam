@@ -38,43 +38,42 @@ class SessionController {
 
     // Admin
     if (user && (await user.checkPassword(password))) {
-      const token = jwt.sign({
-        id: user.id, role: 'admin', name: user.name,
-        email: user.email,
-      }, authConfig.secret, {
+      const token = jwt.sign({ id: user.id, role: 'admin' }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       });
 
       return response.json({
         token,
+        name: user.name,
+        email: user.email,
+        role: 'admin',
       });
     }
 
     // Estudante
     if (students && (await students.checkPassword(password))) {
-      const token = jwt.sign({
-        id: students.id, role: 'students', name: students.name,
-        email: students.email,
-      }, authConfig.secret, {
+      const token = jwt.sign({ id: students.id, role: 'students' }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       });
 
       return response.json({
         token,
+        name: students.name,
+        email: students.email,
+        role: 'students',
       });
     }
 
     // Profissional
     if (prof && (await prof.checkPassword(password))) {
-      const token = jwt.sign({
-        id: prof.id, role: 'prof', name: prof.name,
-        email: prof.email,
-      }, authConfig.secret, {
+      const token = jwt.sign({ id: prof.id, role: 'prof' }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       });
 
       return response.json({
         token,
+        name: prof.name,
+        email: prof.email,
       });
     }
 
