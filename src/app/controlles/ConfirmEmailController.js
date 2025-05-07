@@ -1,6 +1,5 @@
-
-import mjml2html from 'mjml'
 import * as Yup from 'yup'
+import mjml2html from 'mjml'
 import nodemailer from 'nodemailer'
 import jwt from 'jsonwebtoken'
 import { google } from 'googleapis'
@@ -10,109 +9,99 @@ import User from '../model/User.js'
 import ProfData from '../model/ProfData.js'
 import Alunos from '../model/Alunos.js'
 
-const oAuth2Client = new google.auth.OAuth2(
-  process.env.CLIENT_ID,
-  process.env.CLIENT_SECRET,
-  'https://developers.google.com/oauthplayground' // ou sua redirect URI
-)
-
-oAuth2Client.setCredentials({
-  refresh_token: process.env.REFRESH_TOKEN,
-
-})
-
-let accessToken
-try {
-  const tokenResponse = await oAuth2Client.getAccessToken()
-  accessToken = tokenResponse?.token
-} catch (err) {
-  console.error('Erro ao gerar accessToken:', err)
-  return
-}
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    type: 'OAuth2',
-    user: process.env.EMAIL,
-    clientId: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    refreshToken: process.env.REFRESH_TOKEN,
-    accessToken,
-  },
-})
-
 class ConfirmEmailController {
   async store (request, response) {
     const schema = Yup.object().shape({
       email: Yup.string().email().required(),
     })
 
-    // Validação dos dados de entrada diretamente
     if (!(await schema.isValid(request.body))) {
-      return response.status(400).json({ error: 'Email incorrect' })
+      return response.status(400).json({ error: 'Email inválido' })
     }
 
     const { email } = request.body
-
+    const lowerEmail = email.toLowerCase()
     const verificationNumber = Math.floor(Math.random() * 400001) + 100000
 
-    const user = await User.findOne({
-      where: { email: email.toLowerCase() },
-    })
+    // Busca usuário em qualquer uma das tabelas
+    const [user, dataProf, student] = await Promise.all([
+      User.findOne({ where: { email: lowerEmail } }),
+      ProfData.findOne({ where: { email: lowerEmail } }),
+      Alunos.findOne({ where: { email: lowerEmail } }),
+    ])
 
-    const dataProf = await ProfData.findOne({
-      where: { email: email.toLowerCase() },
-    })
+    const account = user || dataProf || student
 
-    const students = await Alunos.findOne({
-      where: { email: email.toLowerCase() },
-    })
-
-    if (user) {
-      await user.update({ update_number: verificationNumber })
-    } else if (dataProf) {
-      await dataProf.update({ update_number: verificationNumber })
-    } else if (students) {
-      await students.update({ update_number: verificationNumber })
-    } else {
-      return response.status(400).json({ error: 'Email incorrect' })
+    if (!account) {
+      return response.status(400).json({ error: 'Email não encontrado' })
     }
 
-    const mjmlCode = `
-      <mj-style>
-        .full-width-image img {
-        width: 100% !important;
-        height: auto !important;
-        }
-      </mj-style>
-      <mjml version="3.3.3">
-        <mj-body background-color="#F4F4F4" color="#55575d" font-family="Arial, sans-serif">
-        <mj-section background-color="#000" padding="0" text-align="center">
-          <mj-column padding="0" background-color="#000" padding="25px" text-align="center"> 
-            <strong font-size="35px" color="#ffffff">Emam</strong>
-          </mj-column>
-        </mj-section>
+    await account.update({ update_number: verificationNumber })
 
-          <mj-section background-color="#fff" padding="0px 0px 20px 0px" align-items="center" text-align="center">
+    // Configuração OAuth2
+    const oAuth2Client = new google.auth.OAuth2(
+      process.env.CLIENT_ID,
+      process.env.CLIENT_SECRET,
+      'https://developers.google.com/oauthplayground'
+    )
+
+    oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN })
+
+    let accessToken
+    try {
+      const tokenResponse = await oAuth2Client.getAccessToken()
+      accessToken = tokenResponse?.token
+    } catch (err) {
+      console.error('Erro ao obter o access token:', err)
+      return response.status(500).json({ error: 'Erro ao gerar token de acesso' })
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        type: 'OAuth2',
+        user: process.env.EMAIL,
+        clientId: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        refreshToken: process.env.REFRESH_TOKEN,
+        accessToken,
+      },
+    })
+
+    const mjmlCode = `
+      <mjml>
+        <mj-body background-color="#F4F4F4" font-family="Arial, sans-serif">
+          <mj-section background-color="#000" padding="25px">
             <mj-column>
-              <mj-text>
-                  <p color="#000" margin-bottom="1rem" class="Title-list">Atualização de Senha</p>
-                  <h2 color="#000" margin-bottom="1rem" class="Title-list">Numero de Verificação: ${verificationNumber}</h2>
-                  <p color="#000" >Clique no botão para atualizar a sua senha</p>
+              <mj-text color="#ffffff" font-size="20px" align="center">
+                <strong>Emam</strong>
               </mj-text>
-              <mj-button background-color="#000" 
-                href=https://www.emam.com.br/Atualizar-Senha" padding="20px"> 
-                Clique Aqui! 
+            </mj-column>
+          </mj-section>
+
+          <mj-section background-color="#fff" padding="20px">
+            <mj-column>
+              <mj-text color="#000" font-size="18px" font-weight="bold">
+                Atualização de Senha
+              </mj-text>
+              <mj-text color="#000" font-size="16px">
+                Número de Verificação: <strong>${verificationNumber}</strong>
+              </mj-text>
+              <mj-text color="#000">
+                Clique no botão abaixo para atualizar sua senha:
+              </mj-text>
+              <mj-button background-color="#000" color="#fff" href="https://www.emam.com.br/Atualizar-Senha">
+                Clique Aqui
               </mj-button>
             </mj-column>
           </mj-section>
-          <mj-section background-color="#55575d" padding="20px 0" text-align="center">
-              <mj-column>
-                  <mj-text align="center" color="#000" font-size="13px" line-height="22px">
-                      <p><strong>Emam - Escola de Musica Advec Macaé</strong></p>
-                  </mj-text>
-              </mj-column>
+
+          <mj-section background-color="#55575d" padding="20px">
+            <mj-column>
+              <mj-text color="#ffffff" font-size="13px" align="center">
+                Emam - Escola de Música Advec Macaé
+              </mj-text>
+            </mj-column>
           </mj-section>
         </mj-body>
       </mjml>
@@ -123,8 +112,8 @@ class ConfirmEmailController {
       const { html: convertedHtml } = mjml2html(mjmlCode)
       html = convertedHtml
     } catch (error) {
-      console.error('Erro ao converter o MJML em HTML:', error)
-      return response.status(500).json({ error: 'Internal server error' })
+      console.error('Erro ao converter MJML:', error)
+      return response.status(500).json({ error: 'Erro ao gerar o e-mail' })
     }
 
     const mailOptions = {
@@ -137,13 +126,13 @@ class ConfirmEmailController {
     try {
       await transporter.sendMail(mailOptions)
       return response.status(200).json({
-        token: jwt.sign({ id: user.id }, authConfig.secret, {
+        token: jwt.sign({ id: account.id }, authConfig.secret, {
           expiresIn: authConfig.expiresIn,
         }),
       })
     } catch (error) {
-      console.error('Erro ao enviar o email:', error)
-      return response.status(500).json({ error: 'Error sending email' })
+      console.error('Erro ao enviar o e-mail:', error)
+      return response.status(500).json({ error: 'Erro ao enviar e-mail' })
     }
   }
 }
