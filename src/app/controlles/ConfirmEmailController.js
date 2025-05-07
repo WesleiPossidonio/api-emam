@@ -1,14 +1,13 @@
 import * as Yup from 'yup'
-
 import mjml2html from 'mjml'
 import nodemailer from 'nodemailer'
 import jwt from 'jsonwebtoken'
 import { google } from 'googleapis'
 
-import authConfig from '../../config/auth'
-import User from '../model/User'
-import ProfData from '../model/ProfData'
-import Alunos from '../model/Alunos'
+import authConfig from '../../config/auth.js'
+import User from '../model/User.js'
+import ProfData from '../model/ProfData.js'
+import Alunos from '../model/Alunos.js'
 
 const oAuth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
