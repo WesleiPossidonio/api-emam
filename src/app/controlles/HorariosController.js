@@ -56,7 +56,7 @@ class HorariosController {
     }
 
     const dateExists = await Horarios.findOne({
-      where: { horario, id_prof: id_prof },
+      where: { horario, id_prof: id_prof, dia },
     })
 
     if (dateExists) {
