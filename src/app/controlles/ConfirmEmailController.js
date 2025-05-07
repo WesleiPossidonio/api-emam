@@ -5,6 +5,8 @@ import nodemailer from 'nodemailer'
 import jwt from 'jsonwebtoken'
 import authConfig from '../../config/auth'
 import User from '../model/User'
+import ProfData from '../model/ProfData'
+import Alunos from '../model/Alunos'
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -32,16 +34,29 @@ class ConfirmEmailController {
 
     const { email } = request.body
 
+    const verificationNumber = Math.floor(Math.random() * 400001) + 100000
+
     const user = await User.findOne({
       where: { email: email.toLowerCase() },
     })
 
-    if (!user) {
+    const dataProf = await ProfData.findOne({
+      where: { email: email.toLowerCase() },
+    })
+
+    const students = await Alunos.findOne({
+      where: { email: email.toLowerCase() },
+    })
+
+    if (user) {
+      await user.update({ update_number: verificationNumber })
+    } else if (dataProf) {
+      await dataProf.update({ update_number: verificationNumber })
+    } else if (students) {
+      await students.update({ update_number: verificationNumber })
+    } else {
       return response.status(400).json({ error: 'Email incorrect' })
     }
-
-    const verificationNumber = Math.floor(Math.random() * 400001) + 100000
-    await user.update({ update_number: verificationNumber })
 
     const mjmlCode = `
       <mj-style>

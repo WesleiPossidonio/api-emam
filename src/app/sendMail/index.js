@@ -73,6 +73,10 @@ export const sendMailStudents = async ({ email, name }) => {
                Após a confirmação, sua matrícula será concluída com sucesso.
               </p>
 
+              <p>
+                Usuários de IOS, verificar se o uso de poup-ups estão bloqueado caso esteja fazer a seguinte configutação, Ajustes > Safari > Avançado e desative a opção Bloquear poup-ups
+              </p>
+
               <a href="https://www.emam.com.br/login-estudante" target="_blank" rel="noopener noreferrer">Portal do Aluno</a>
             </mj-text>
 
