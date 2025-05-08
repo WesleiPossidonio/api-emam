@@ -10,6 +10,7 @@ class Horarios extends Model {
         quantidade_alunos: Sequelize.NUMBER,
         disponibilidade_alunos: Sequelize.NUMBER,
         disponibilidade_horario: Sequelize.STRING,
+        instrumento: Sequelize.STRING,
       },
       {
         sequelize,

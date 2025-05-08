@@ -50,7 +50,7 @@ export const sendMailStudents = async ({ email, name }) => {
       <mj-section background-color="#f2f2f2" padding="0" text-align="center" full-width="full-width">
         <mj-section background-color="#000" padding="0" text-align="center">
           <mj-column padding="0" background-color="#000" padding="25px" text-align="center"> 
-            <strong font-size="35px" color="#ffffff">Emam</strong>
+            <strong font-size="35px" color="#ffffff">Emam - Escola de Musica Advec Macaé</strong>
           </mj-column>
         </mj-section>
         

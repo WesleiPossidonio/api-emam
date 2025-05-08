@@ -90,6 +90,7 @@ class ProfDataController {
             'disponibilidade_horario',
             'disponibilidade_alunos',
             'quantidade_alunos',
+            'instrumento'
           ],
 
         },
@@ -117,6 +118,7 @@ class ProfDataController {
                 'quantidade_alunos',
                 'disponibilidade_alunos',
                 'disponibilidade_horario',
+                'instrumento'
               ]
             }
           ]

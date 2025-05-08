@@ -74,7 +74,7 @@ class ConfirmEmailController {
           <mj-section background-color="#000" padding="25px">
             <mj-column>
               <mj-text color="#ffffff" font-size="20px" align="center">
-                <strong>Emam</strong>
+                <strong>Emam - Escola de Musica Advec Macaé</strong>
               </mj-text>
             </mj-column>
           </mj-section>

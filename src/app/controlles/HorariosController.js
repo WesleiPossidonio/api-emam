@@ -23,6 +23,7 @@ class HorariosController {
       dia: Yup.string().required(),
       horario: Yup.string().required().min(6),
       turno: Yup.string().required(),
+      instrumento: Yup.string().required(),
       quantidade_alunos: Yup.string().required(),
       disponibilidade_horario: Yup.number().optional(),
       disponibilidade_alunos: Yup.number().optional(),
@@ -43,7 +44,8 @@ class HorariosController {
       turno,
       disponibilidade_horario,
       quantidade_alunos,
-      disponibilidade_alunos
+      disponibilidade_alunos,
+      instrumento
     } = sanitizedBody
 
 
@@ -71,7 +73,8 @@ class HorariosController {
       turno,
       disponibilidade_horario,
       quantidade_alunos,
-      disponibilidade_alunos
+      disponibilidade_alunos,
+      instrumento
     })
 
     return response.status(201).json({ message: 'Date created successfully' })
@@ -87,6 +90,7 @@ class HorariosController {
       dia: Yup.string().optional(),
       horario: Yup.string().optional(),
       turno: Yup.string().optional(),
+      instrumento: Yup.string().optional(),
       disponibilidade_horario: Yup.string().optional(),
       quantidade_alunos: Yup.number().optional(),
       disponibilidade_alunos: Yup.number().optional(),
@@ -113,6 +117,7 @@ class HorariosController {
 
     if (dia) verificationUser.dia = dia
     if (horario) verificationUser.horario = horario
+    if (horario) verificationUser.instrumento = instrumento
     if (turno) verificationUser.turno = turno
     if (disponibilidade_horario) verificationUser.disponibilidade_horario = disponibilidade_horario
     if (quantidade_alunos) verificationUser.quantidade_alunos = quantidade_alunos
