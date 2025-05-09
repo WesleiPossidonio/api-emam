@@ -25,7 +25,7 @@ routes.patch('/updatePasswordStudents/:id', AlunosController.update)
 routes.post('/createProf', ProfDataController.store)
 routes.post('/createUser', UserController.store)
 
-routes.use(authMiddlewares)
+// routes.use(authMiddlewares)
 routes.get('/getAlunos', AlunosController.index)
 routes.post('/atualizar-alunos', AlunosController.update)
 routes.post('/createHours', HorariosController.store)

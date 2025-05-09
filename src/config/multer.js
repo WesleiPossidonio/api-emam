@@ -82,7 +82,7 @@ const uploadToGoogleDrive = async (req, res, next) => {
 
       return {
         id: response.data.id,
-        link: `https://drive.google.com/file/d/${response.data.id}/view`,
+        link: `https://drive.google.com/uc?export=view&id=${response.data.id}`,
         downloadLink: `https://drive.google.com/uc?id=${response.data.id}&export=download`,
       };
     };

@@ -49,7 +49,7 @@ class Alunos extends Model {
       as: 'horarios_alunos',
     })
 
-    this.hasOne(models.Payments, {
+    this.hasMany(models.Payments, {
       foreignKey: 'id_alunos',
       as: 'pagamentos',
     })
